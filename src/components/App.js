@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import "../styles/App.css";
 var clearSetInterval = 0;
-class Timer extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { time: 0, x: 0, y: 0 };
@@ -53,4 +53,4 @@ class Timer extends React.Component {
   }
 }
 
-export default Timer;
+export default App;
