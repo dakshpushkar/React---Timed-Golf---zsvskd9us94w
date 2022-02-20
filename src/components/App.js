@@ -1,53 +1,98 @@
 import React, { Component, useState } from "react";
+
+import Ball from "./Ball";
+import Hole from "./Hole";
+import Start from "./Start";
+import Timer from "./Timer";
+
 import "../styles/App.css";
-var clearSetInterval = 0;
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { time: 0, x: 0, y: 0 };
-    this.moveBall = this.moveBall.bind(this);
-    this.setup = this.setup.bind(this);
-  }
-  
-  setup(event){
-    switch(event.keyCode){
-      case 37: this.setState({x : this.state.x - 5,});
-        break;
-      case 38: this.setState({y : this.state.y - 5,});
-        break;
-      case 39: this.setState({x : this.state.x + 5,});
-        break;
-      case 40: this.setState({y : this.state.y + 5,});
-        break;
-      default:
-        break;
-    }
-    if(this.state.x === 250 && this.state.y === 250){
-      document.removeEventListener("keydown", this.setup);
-      this.interval();
-    }
-  }
-  interval(){
-    if(this.state.time === 0)
-      clearSetInterval = setInterval(()=>{this.setState({time : this.state.time + 1})}, 1000);
-    if(this.state.x === 250 && this.state.y === 250)
-      clearInterval(clearSetInterval);
+
+    this.state = { 
+      time: 0, 
+      x: 0, 
+      y: 0, 
+      interval: 0, 
+      hideStartButton: false 
+    };
+    
+    this.left = this.left.bind(this);
+    this.right = this.right.bind(this);
+    this.up = this.up.bind(this);
+    this.down = this.down.bind(this);
+
+    this.startGame = this.startGame.bind(this);
+    this.stopGame = this.stopGame.bind(this);
   }
 
-  moveBall(){
-    if(this.state.time === 0){
-      this.interval();
-      document.addEventListener("keydown", this.setup);
-    }
-  };
+  left() {
+    this.setState({
+      x: this.state.x - 5
+    })
+  }
+
+  right() {
+    this.setState({
+      x: this.state.x + 5
+    })
+  }
+
+  up() {
+    this.setState({
+      y: this.state.y - 5
+    })
+  }
+
+  down() {
+    this.setState({
+      y: this.state.y + 5
+    })
+  }
+
+  startGame() {
+    this.setState({
+      hideStartButton: true
+    })
+
+    this.state.interval = setInterval(()=> {
+      this.setState({
+        time: this.state.time + 1
+      })
+
+    }, 1000);
+
+  }
+
+  stopGame() {
+    clearInterval(this.state.interval);
+  }
+
+  componentDidMount() {
+    
+  }
+
+  componentWillUnmount() {
+    
+  }
+
+
 
   render() {
     return (
-      <>
-        <div className="ball" style={{left : this.state.x, top : this.state.y}}></div>
-        <div className="heading-timer">{this.state.time}</div>
-        <button className="start" style={{margin:"5rem"}} onClick={this.moveBall}>start</button>
-        <div className="hole"></div>
+      <> 
+        <Ball position={{x:this.state.x, y:this.state.y}} 
+          left={this.left}
+          right={this.right}
+          up={this.up}
+          down={this.down}
+          stopGame={this.stopGame}
+          hideStartButton={this.state.hideStartButton}/>
+
+        <Hole />
+        <Start startGame={this.startGame} hideStartButton={this.state.hideStartButton}/> 
+        <Timer time={this.state.time}/>
       </>
     );
   }
